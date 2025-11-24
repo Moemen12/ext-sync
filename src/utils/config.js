@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const CONFIG_FILENAME = 'ext-sync.json';
+import { CONFIG_FILENAME } from './constants.js';
 
 export function getConfigPath() {
   return path.join(process.cwd(), CONFIG_FILENAME);

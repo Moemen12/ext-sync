@@ -1,13 +1,15 @@
 import chalk from 'chalk';
 import { loadConfig, configExists } from '../utils/config.js';
-import { installExtensions, getActiveEditor } from '../utils/editor.js';
+import { installExtensions, getActiveEditor, detectEditors } from '../utils/editor.js';
+import { select } from '@inquirer/prompts';
+import { CONFIG_FILENAME, EDITOR_NAMES } from '../utils/constants.js';
 
 export async function sync() {
-  console.log(chalk.blue('Syncing extensions from ext-sync.json... 🔄'));
+  console.log(chalk.blue(`Syncing extensions from ${CONFIG_FILENAME}... 🔄`));
 
   // Check if config exists
   if (!configExists()) {
-    console.log(chalk.red('\n❌ No ext-sync.json found in current directory.'));
+    console.log(chalk.red(`\n❌ No ${CONFIG_FILENAME} found in current directory.`));
     console.log(chalk.yellow('Please run "Initialize new setup" or "Import extensions" first.\n'));
     return false;
   }
@@ -21,41 +23,31 @@ export async function sync() {
     return;
   }
 
-  // Determine which editor to use
-  const activeEditor = getActiveEditor();
-  const targetEditor = activeEditor || config.editor;
-
-  if (!targetEditor) {
-    console.log(chalk.red('\n❌ Could not detect active editor and no editor specified in config.'));
-    console.log(chalk.yellow('Please run this command from within an editor terminal.\n'));
+  if (!config.extensions || !Array.isArray(config.extensions) || config.extensions.length === 0) {
+    console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
     return;
   }
 
-  const editorNames = {
-    'code': 'VS Code',
-    'cursor': 'Cursor',
-    'antigravity': 'Antigravity'
-  };
+  // Determine which editor to use
+  let targetEditor = getActiveEditor();
 
-  console.log(chalk.green(`\n📍 Target editor: ${editorNames[targetEditor] || targetEditor}`));
+  if (!targetEditor) {
+    console.log(chalk.yellow('\n⚠️  Not running inside an editor terminal.'));
+    const editors = await detectEditors();
+    
+    if (editors.length === 0) {
+      console.log(chalk.red('❌ No supported editors detected.'));
+      return;
+    }
+
+    targetEditor = await select({
+      message: 'Which editor do you want to sync to?',
+      choices: editors,
+    });
+  }
+
+  console.log(chalk.green(`\n📍 Target editor: ${EDITOR_NAMES[targetEditor] || targetEditor}`));
 
   // Install extensions
-  if (config.extensions) {
-    const allExtensions = new Set();
-
-    // Collect extensions from all stacks
-    Object.values(config.extensions).forEach(stackExts => {
-      if (Array.isArray(stackExts)) {
-        stackExts.forEach(ext => allExtensions.add(ext));
-      }
-    });
-
-    if (allExtensions.size > 0) {
-      await installExtensions(Array.from(allExtensions), targetEditor);
-    } else {
-      console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
-    }
-  } else {
-    console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
-  }
+  await installExtensions(config.extensions, targetEditor);
 }

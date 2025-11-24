@@ -20,66 +20,58 @@ Ever joined a new project and spent hours installing the "right" extensions? Or 
 npm install -g @saadeh/ext-sync
 ```
 
-## 🎮 Usage
+## 📁 Configuration File
 
-Simply run:
+The `ext-sync.json` file is dead simple. It just contains a list of your extensions:
 
-```bash
-ext-sync
+```json
+{
+  "extensions": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens"
+  ]
+}
 ```
-
-You'll see an interactive menu with three options:
 
 ### 1. Initialize new setup
 
-Choose your tech stack and install recommended extensions:
-
-```bash
-? What are you working with?
-❯ React
-  Laravel
-  NestJS
-  JavaScript
-```
-
-The tool will:
-
-- ✅ Check which extensions you already have
-- ⚡ Only install missing ones
-- 🔄 **Merge** with existing config if you run it again (e.g., add Laravel to your React setup)
-- 💾 Save your setup to `ext-sync.json`
-
-### 2. Sync extensions
-
-Install all extensions from an existing `ext-sync.json` file:
+If you are starting fresh, use the interactive menu to install recommended extensions for your stack (e.g., React, Laravel, Python).
 
 ```bash
 ext-sync
-# Select "Sync extensions"
+# Select "Initialize new setup"
 ```
 
-Perfect for:
+- 📦 **Installs** recommended extensions for your chosen stack.
+- 💾 **Creates** `ext-sync.json` with these extensions.
+- ➕ **Appends** to the list if you run it again for another stack.
 
-- 🆕 New team members
-- 💻 Setting up a new machine
-- 🔄 Keeping everyone's setup consistent
+### 2. Import existing extensions
 
-### 3. Import extensions
-
-Snapshot your current extensions into `ext-sync.json`:
+If you already have a perfect setup, save it!
 
 ```bash
 ext-sync
 # Select "Import extensions"
 ```
 
-Great for:
+- 📥 **Reads** all your currently installed extensions.
+- 💾 **Saves** them to `ext-sync.json`.
+- 🔄 **Merges** with existing list if the file already exists.
 
-- 📸 Capturing your perfect setup
-- 🤝 Sharing with your team
-- 📦 Version controlling your editor config
+### 3. Sync extensions
 
-## 📁 Configuration File
+Install everything in your config to your current editor.
+
+```bash
+ext-sync
+# Select "Sync extensions"
+```
+
+- 🚀 **Installs** all extensions listed in `ext-sync.json`.
+- ⚡ **Efficient**: Only installs what is missing.
+- 🕵️ **Smart**: Automatically detects if you are using VS Code, Cursor, or Antigravity.
 
 The `ext-sync.json` file supports **multiple stacks**:
 

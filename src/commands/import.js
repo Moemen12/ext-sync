@@ -1,10 +1,40 @@
 import chalk from 'chalk';
-import { saveConfig } from '../utils/config.js';
+import { saveConfig, configExists, loadConfig } from '../utils/config.js';
 import { listExtensions, getActiveEditor, detectEditors } from '../utils/editor.js';
 import { select } from '@inquirer/prompts';
+import { CONFIG_FILENAME, EDITOR_NAMES } from '../utils/constants.js';
 
 export async function importExtensions() {
   console.log(chalk.blue('Importing installed extensions... 📥'));
+
+  let existingConfig = null;
+  let merge = false;
+
+  if (configExists()) {
+    const action = await select({
+      message: `Configuration file (${CONFIG_FILENAME}) already exists. What do you want to do?`,
+      choices: [
+        { name: 'Merge (Append to existing list)', value: 'merge' },
+        { name: 'Overwrite completely', value: 'overwrite' },
+        { name: 'Cancel', value: 'cancel' }
+      ]
+    });
+
+    if (action === 'cancel') {
+      console.log(chalk.yellow('Import cancelled.'));
+      return;
+    }
+
+    if (action === 'merge') {
+      try {
+        existingConfig = loadConfig();
+        merge = true;
+      } catch (error) {
+        console.log(chalk.red(`Error loading existing config: ${error.message}`));
+        return;
+      }
+    }
+  }
 
   let targetEditor = getActiveEditor();
 
@@ -23,13 +53,7 @@ export async function importExtensions() {
     });
   }
 
-  const editorNames = {
-    'code': 'VS Code',
-    'cursor': 'Cursor',
-    'antigravity': 'Antigravity'
-  };
-
-  console.log(chalk.green(`\n📍 Importing from: ${editorNames[targetEditor] || targetEditor}`));
+  console.log(chalk.green(`\n📍 Importing from: ${EDITOR_NAMES[targetEditor] || targetEditor}`));
 
   try {
     const extensions = await listExtensions(targetEditor);
@@ -41,16 +65,27 @@ export async function importExtensions() {
 
     console.log(chalk.blue(`\nFound ${extensions.length} extensions.`));
 
-    // Save to config
-    const config = {
-      editor: targetEditor,
-      extensions: {
-        node: extensions
-      }
-    };
+    // Prepare config
+    let config = { extensions: [] };
+    
+    if (merge && existingConfig && Array.isArray(existingConfig.extensions)) {
+      // Start with existing extensions
+      config.extensions = [...existingConfig.extensions];
+      
+      // Add new ones if not already present
+      const newExts = extensions.filter(ext => !config.extensions.includes(ext));
+      config.extensions.push(...newExts);
+      
+      console.log(chalk.blue(`\n➕ Added ${newExts.length} new extensions to the list.`));
+    } else {
+      config.extensions = extensions;
+    }
+
+    // Sort for neatness
+    config.extensions.sort();
 
     saveConfig(config);
-    console.log(chalk.green(`\n💾 Imported ${extensions.length} extensions to ${chalk.bold('ext-sync.json')}`));
+    console.log(chalk.green(`\n💾 Saved ${config.extensions.length} extensions to ${chalk.bold(CONFIG_FILENAME)}`));
 
   } catch (error) {
     console.log(chalk.red(`\n❌ Error importing extensions: ${error.message}`));
