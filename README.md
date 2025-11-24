@@ -73,26 +73,6 @@ ext-sync
 - ⚡ **Efficient**: Only installs what is missing.
 - 🕵️ **Smart**: Automatically detects if you are using VS Code, Cursor, or Antigravity.
 
-The `ext-sync.json` file supports **multiple stacks**:
-
-```json
-{
-  "editor": "antigravity",
-  "stacks": ["react", "laravel"],
-  "extensions": {
-    "react": [
-      "dsznajder.es7-react-js-snippets",
-      "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint"
-    ],
-    "laravel": [
-      "bmewburn.vscode-intelephense-client",
-      "onecentlin.laravel-blade"
-    ]
-  }
-}
-```
-
 **Commit this file to your repo** so your team can sync instantly!
 
 ## 🎯 Supported Editors
