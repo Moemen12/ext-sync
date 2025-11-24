@@ -45,7 +45,8 @@ Choose your tech stack and install recommended extensions:
 The tool will:
 
 - ✅ Check which extensions you already have
-- ⚡ Only install missing ones (saves time!)
+- ⚡ Only install missing ones
+- 🔄 **Merge** with existing config if you run it again (e.g., add Laravel to your React setup)
 - 💾 Save your setup to `ext-sync.json`
 
 ### 2. Sync extensions
@@ -80,17 +81,21 @@ Great for:
 
 ## 📁 Configuration File
 
-The `ext-sync.json` file looks like this:
+The `ext-sync.json` file supports **multiple stacks**:
 
 ```json
 {
   "editor": "antigravity",
-  "stack": "react",
+  "stacks": ["react", "laravel"],
   "extensions": {
     "react": [
       "dsznajder.es7-react-js-snippets",
       "esbenp.prettier-vscode",
       "dbaeumer.vscode-eslint"
+    ],
+    "laravel": [
+      "bmewburn.vscode-intelephense-client",
+      "onecentlin.laravel-blade"
     ]
   }
 }

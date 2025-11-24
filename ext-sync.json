@@ -1,11 +1,13 @@
 {
   "editor": "antigravity",
-  "stack": "react",
+  "stacks": [
+    "javascript"
+  ],
   "extensions": {
-    "react": [
-      "dsznajder.es7-react-js-snippets",
+    "javascript": [
       "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint"
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens"
     ]
   }
 }

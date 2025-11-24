@@ -1,8 +1,8 @@
-import { select, confirm, checkbox } from '@inquirer/prompts';
+import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { extensions } from '../data/extensions.js';
 import { installExtensions, getActiveEditor, detectEditors, listExtensions } from '../utils/editor.js';
-import { saveConfig, getConfigPath, configExists } from '../utils/config.js';
+import { saveConfig, configExists, loadConfig } from '../utils/config.js';
 import { sync } from './sync.js';
 import { importExtensions } from './import.js';
 
@@ -71,15 +71,32 @@ export async function start() {
 }
 
 async function runInit() {
+  let existingConfig = null;
+  let merge = false;
+
   if (configExists()) {
-    const overwrite = await confirm({
-      message: 'Configuration file (ext-sync.json) already exists. Overwrite?',
-      default: false
+    const action = await select({
+      message: 'Configuration file (ext-sync.json) already exists. What do you want to do?',
+      choices: [
+        { name: 'Merge with existing config (Add new stack)', value: 'merge' },
+        { name: 'Overwrite completely', value: 'overwrite' },
+        { name: 'Cancel', value: 'cancel' }
+      ]
     });
 
-    if (!overwrite) {
+    if (action === 'cancel') {
       console.log(chalk.yellow('Initialization cancelled.'));
       return;
+    }
+
+    if (action === 'merge') {
+      try {
+        existingConfig = loadConfig();
+        merge = true;
+      } catch (error) {
+        console.log(chalk.red(`Error loading existing config: ${error.message}`));
+        return;
+      }
     }
   }
 
@@ -148,14 +165,32 @@ async function runInit() {
     await installExtensions(toInstall, selectedEditor);
   }
 
-  // Save config
-  const config = {
-    editor: selectedEditor,
-    stack: stack,
-    extensions: {
-      [stack]: extensions[stack]
-    }
-  };
+  // Prepare config
+  let config;
+  if (merge && existingConfig) {
+    config = { ...existingConfig };
+
+    // Ensure stacks array exists
+    if (!config.stacks) config.stacks = [];
+    if (config.stack && !config.stacks.includes(config.stack)) config.stacks.push(config.stack);
+
+    // Add new stack if not present
+    if (!config.stacks.includes(stack)) config.stacks.push(stack);
+
+    // Merge extensions
+    config.extensions = { ...config.extensions, [stack]: extensions[stack] };
+
+    // Remove legacy single 'stack' property if moving to array
+    delete config.stack;
+  } else {
+    config = {
+      editor: selectedEditor,
+      stacks: [stack],
+      extensions: {
+        [stack]: extensions[stack]
+      }
+    };
+  }
 
   try {
     saveConfig(config);

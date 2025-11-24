@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { loadConfig, configExists } from '../utils/config.js';
 import { installExtensions, getActiveEditor } from '../utils/editor.js';
-import { extensions } from '../data/extensions.js';
 
 export async function sync() {
   console.log(chalk.blue('Syncing extensions from ext-sync.json... 🔄'));
@@ -41,8 +40,21 @@ export async function sync() {
   console.log(chalk.green(`\n📍 Target editor: ${editorNames[targetEditor] || targetEditor}`));
 
   // Install extensions
-  if (config.extensions && config.extensions.node && config.extensions.node.length > 0) {
-    await installExtensions(config.extensions.node, targetEditor);
+  if (config.extensions) {
+    const allExtensions = new Set();
+
+    // Collect extensions from all stacks
+    Object.values(config.extensions).forEach(stackExts => {
+      if (Array.isArray(stackExts)) {
+        stackExts.forEach(ext => allExtensions.add(ext));
+      }
+    });
+
+    if (allExtensions.size > 0) {
+      await installExtensions(Array.from(allExtensions), targetEditor);
+    } else {
+      console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
+    }
   } else {
     console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
   }
