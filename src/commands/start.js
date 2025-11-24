@@ -7,57 +7,66 @@ import { sync } from './sync.js';
 import { importExtensions } from './import.js';
 
 export async function start() {
-  console.log(chalk.blue('Welcome to ext-sync! 🚀'));
+  try {
+    console.log(chalk.blue('Welcome to ext-sync! 🚀'));
 
-  while (true) {
-    const action = await select({
-      message: 'What would you like to do?',
-      choices: [
-        {
-          name: 'Initialize new setup',
-          value: 'init',
-          description: 'Install recommended extensions and create config'
-        },
-        {
-          name: 'Sync extensions',
-          value: 'sync',
-          description: 'Install extensions from ext-sync.json'
-        },
-        {
-          name: 'Import extensions',
-          value: 'import',
-          description: 'Save currently installed extensions to ext-sync.json'
-        },
-        {
-          name: 'Exit',
-          value: 'exit',
-        },
-      ],
-    });
+    while (true) {
+      const action = await select({
+        message: 'What would you like to do?',
+        choices: [
+          {
+            name: 'Initialize new setup',
+            value: 'init',
+            description: 'Install recommended extensions and create config'
+          },
+          {
+            name: 'Sync extensions',
+            value: 'sync',
+            description: 'Install extensions from ext-sync.json'
+          },
+          {
+            name: 'Import extensions',
+            value: 'import',
+            description: 'Save currently installed extensions to ext-sync.json'
+          },
+          {
+            name: 'Exit',
+            value: 'exit',
+          },
+        ],
+      });
 
-    if (action === 'exit') {
-      console.log(chalk.blue('Bye! 👋'));
-      break;
+      if (action === 'exit') {
+        console.log(chalk.blue('Bye! 👋'));
+        break;
+      }
+
+      if (action === 'sync') {
+        const success = await sync();
+        if (success === false) break;
+        console.log(chalk.blue('Bye! 👋'));
+        break;
+      }
+
+      if (action === 'import') {
+        await importExtensions();
+        console.log(chalk.blue('Bye! 👋'));
+        break;
+      }
+
+      if (action === 'init') {
+        await runInit();
+        console.log(chalk.blue('Bye! 👋'));
+        break;
+      }
     }
-
-    if (action === 'sync') {
-      const success = await sync();
-      if (success === false) break;
-      console.log(chalk.blue('Bye! 👋'));
-      break;
+  } catch (error) {
+    // Handle Ctrl+C gracefully
+    if (error.name === 'ExitPromptError') {
+      console.log(chalk.yellow('\n\nCancelled. Bye! 👋'));
+      process.exit(0);
     }
-
-    if (action === 'import') {
-      await importExtensions();
-      console.log(chalk.blue('Bye! 👋'));
-      break;
-    }
-
-    if (action === 'init') {
-      await runInit();
-      console.log(chalk.blue('Bye! 👋'));
-      break;
-    }
+    throw error;
   }
 }
 
@@ -88,7 +97,7 @@ async function runInit() {
   } else {
     console.log(chalk.yellow('\n⚠️  Not running inside an editor terminal.'));
     const editors = await detectEditors();
-    
+
     if (editors.length === 0) {
       console.log(chalk.red('❌ No supported editors (VS Code, Cursor, or Antigravity) detected in your PATH.'));
       return;
@@ -104,20 +113,33 @@ async function runInit() {
   const stack = await select({
     message: 'What are you working with?',
     choices: [
+      { name: 'JavaScript', value: 'javascript' },
+      { name: 'TypeScript', value: 'typescript' },
       { name: 'React', value: 'react' },
-      { name: 'Laravel', value: 'laravel' },
+      { name: 'Vue.js', value: 'vue' },
+      { name: 'Angular', value: 'angular' },
+      { name: 'Svelte', value: 'svelte' },
+      { name: 'Laravel (PHP)', value: 'laravel' },
       { name: 'NestJS', value: 'nestjs' },
-      { name: 'JavaScript', value: 'javascript' }
+      { name: 'Python', value: 'python' },
+      { name: 'Java', value: 'java' },
+      { name: 'Go', value: 'go' },
+      { name: 'Rust', value: 'rust' },
+      { name: 'C/C++', value: 'cpp' },
+      { name: 'C# (.NET)', value: 'csharp' },
+      { name: 'Flutter', value: 'flutter' },
+      { name: 'React Native', value: 'react_native' },
+      { name: 'Kotlin (Android)', value: 'kotlin' },
     ]
   });
 
   console.log(chalk.blue(`\n🔍 Checking for already installed extensions...`));
-  
+
   // Get currently installed extensions
   const installed = await listExtensions(selectedEditor);
-  
+
   // Filter out already-installed extensions
-  const toInstall = extensions[stack].filter(ext => !installed.includes(ext.id));
+  const toInstall = extensions[stack].filter(extId => !installed.includes(extId));
 
   if (toInstall.length === 0) {
     console.log(chalk.green(`\n✅ All ${stack} extensions are already installed!`));
@@ -131,7 +153,7 @@ async function runInit() {
     editor: selectedEditor,
     stack: stack,
     extensions: {
-      [stack]: extensions[stack].map(ext => ext.id)
+      [stack]: extensions[stack]
     }
   };
 

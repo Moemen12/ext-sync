@@ -106,30 +106,35 @@ The `ext-sync.json` file looks like this:
 
 The tool automatically detects which editor you're using.
 
-## 🛠️ Stack-Specific Extensions
+## 🛠️ Supported Stacks
 
-### React
+**Frontend:**
 
-- ES7+ React/Redux snippets
-- Prettier
-- ESLint
+- ⚛️ React / React Native
+- 🟢 Vue.js
+- 🅰️ Angular
+- 🟠 Svelte
+- 💛 JavaScript / TypeScript
 
-### Laravel
+**Backend:**
 
-- PHP Intelephense
-- Laravel Blade Snippets
-- Prettier
+- 🐘 Laravel (PHP)
+- 🦁 NestJS
+- 🐍 Python
+- ☕ Java
+- 🐹 Go
+- 🦀 Rust
+- 🇨 C/C++
+- 🔷 C# (.NET)
 
-### NestJS
+**Mobile:**
 
-- Prettier
-- ESLint
-- Jest Runner
+- 📱 Flutter
+- 🤖 Kotlin (Android)
+- ⚛️ React Native
 
-### JavaScript
-
-- Prettier
-- ESLint
+> 💡 **Curious about what's installed?**
+> Check out the full list of curated extensions in [src/data/extensions.js](./src/data/extensions.js). We include essential tools (Prettier, ESLint) plus productivity boosters (GitLens, snippets, etc.) for each stack.
 
 ## 🤝 Team Workflow
 

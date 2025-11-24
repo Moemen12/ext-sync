@@ -42,14 +42,7 @@ export async function sync() {
 
   // Install extensions
   if (config.extensions && config.extensions.node && config.extensions.node.length > 0) {
-    // Map extension IDs back to full extension objects for installExtensions
-    const extensionsToInstall = config.extensions.node.map(id => {
-      // Try to find the full extension object from our data
-      const fullExt = extensions.node.find(ext => ext.id === id);
-      return fullExt || { id, name: id, description: '' };
-    });
-
-    await installExtensions(extensionsToInstall, targetEditor);
+    await installExtensions(config.extensions.node, targetEditor);
   } else {
     console.log(chalk.yellow('\n⚠️  No extensions found in config.\n'));
   }

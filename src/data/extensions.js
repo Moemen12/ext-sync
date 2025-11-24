@@ -1,65 +1,96 @@
 export const extensions = {
+    // Web Frameworks
     react: [
-        {
-            id: 'dsznajder.es7-react-js-snippets',
-            name: 'ES7+ React/Redux/React-Native snippets',
-            description: 'Extensions for React, React-Native and Redux in JS/TS with ES7+ syntax.',
-        },
-        {
-            id: 'esbenp.prettier-vscode',
-            name: 'Prettier - Code formatter',
-            description: 'Code formatter using Prettier.',
-        },
-        {
-            id: 'dbaeumer.vscode-eslint',
-            name: 'ESLint',
-            description: 'Integrates ESLint into VS Code.',
-        },
+        'dsznajder.es7-react-js-snippets',
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'planbcoding.vscode-react-refactor',
     ],
+    vue: [
+        'vue.volar',
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'antfu.iconify',
+    ],
+    angular: [
+        'angular.ng-template',
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'johnpapa.angular2',
+    ],
+    svelte: [
+        'svelte.svelte-vscode',
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+    ],
+
+    // Mobile
+    react_native: [
+        'msjsdiag.vscode-react-native',
+        'dsznajder.es7-react-js-snippets',
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+    ],
+    flutter: [
+        'dart-code.flutter',
+        'dart-code.dart-code',
+        'nash.awesome-flutter-snippets',
+    ],
+    kotlin: [
+        'mathiasfrohlich.Kotlin',
+        'fwcd.kotlin',
+    ],
+
+    // Backend / Languages
     laravel: [
-        {
-            id: 'bmewburn.vscode-intelephense-client',
-            name: 'PHP Intelephense',
-            description: 'PHP code intelligence for Visual Studio Code.',
-        },
-        {
-            id: 'onecentlin.laravel-blade',
-            name: 'Laravel Blade Snippets',
-            description: 'Laravel blade snippets and syntax highlight support.',
-        },
-        {
-            id: 'esbenp.prettier-vscode',
-            name: 'Prettier - Code formatter',
-            description: 'Code formatter using Prettier.',
-        },
+        'bmewburn.vscode-intelephense-client',
+        'onecentlin.laravel-blade',
+        'esbenp.prettier-vscode',
+        'codingyu.laravel-goto-view', 
+        'stef-k.laravel-goto-controller',
+        'amiralizadeh9480.laravel-extra-intellisense',
     ],
     nestjs: [
-        {
-            id: 'esbenp.prettier-vscode',
-            name: 'Prettier - Code formatter',
-            description: 'Code formatter using Prettier.',
-        },
-        {
-            id: 'dbaeumer.vscode-eslint',
-            name: 'ESLint',
-            description: 'Integrates ESLint into VS Code.',
-        },
-        {
-            id: 'firsttris.vscode-jest-runner',
-            name: 'Jest Runner',
-            description: 'Simple way to run or debug a single or multiple Jest-Tests.',
-        },
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'firsttris.vscode-jest-runner',
+        'adrien2p.vscode-nestjs-snippets',
     ],
+    python: [
+        'ms-python.python',
+        'ms-python.vscode-pylance',
+        'njpwerner.autodocstring',
+    ],
+    java: [
+        'vscjava.vscode-java-pack',
+        'vmware.vscode-spring-boot',
+    ],
+    go: [
+        'golang.go',
+    ],
+    rust: [
+        'rust-lang.rust-analyzer',
+        'serayuzgur.crates',
+        'tamasfe.even-better-toml',
+    ],
+    cpp: [
+        'ms-vscode.cpptools',
+        'twxs.cmake',
+    ],
+    csharp: [
+        'ms-dotnettools.csharp',
+        'kreativ-software.csharpextensions',
+    ],
+
+    // General
     javascript: [
-        {
-            id: 'esbenp.prettier-vscode',
-            name: 'Prettier - Code formatter',
-            description: 'Code formatter using Prettier.',
-        },
-        {
-            id: 'dbaeumer.vscode-eslint',
-            name: 'ESLint',
-            description: 'Integrates ESLint into VS Code.',
-        },
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'eamodio.gitlens',
+    ],
+    typescript: [
+        'esbenp.prettier-vscode',
+        'dbaeumer.vscode-eslint',
+        'eamodio.gitlens',
     ],
 };

@@ -70,7 +70,9 @@ export async function installExtensions(extensions, cmd) {
 
     let successCount = 0;
     for (const ext of extensions) {
-        const success = await installExtension(ext.id, cmd);
+        // Handle both string IDs and objects with .id property
+        const extId = typeof ext === 'string' ? ext : ext.id;
+        const success = await installExtension(extId, cmd);
         if (success) successCount++;
     }
 
